@@ -545,13 +545,13 @@ void ForestRenderer::Impl::frame(float seconds, float yaw, float pitch, float di
                      lv;
     }
     const forest::Effect lights[] = {forest::Effect::Fire, forest::Effect::Blast, forest::Effect::Lightning};
-    const float intensities[] = {9500.f * (1 + .13f * std::sin(seconds * 13) + .09f * std::sin(seconds * 23)),
-                                 80000.f * std::exp(-forest::blastAge(seconds) * 7),
-                                 55000.f * forest::lightningPulse(seconds)};
-    const glm::vec3 colors[] = {{1, .32, .06}, {1, .5, .1}, {.45, .65, 1}};
+    const glm::vec3 colors[] = {{1, .27f, .055f}, {1, .46f, .12f}, {.55f, .72f, 1}};
+    const float heights[] = {.95f, 1.5f, 2.7f};
+    const float radii[] = {7.5f, 9.f, 8.5f};
     for (int i = 0; i < 3; i++) {
-        u.points[i] = glm::vec4(forest::effectOrigin(lights[i]) + glm::vec3(0, 1, 0), intensities[i]);
-        u.colors[i] = glm::vec4(colors[i], 1);
+        u.points[i] = glm::vec4(forest::effectOrigin(lights[i]) + glm::vec3(0, heights[i], 0),
+                                forest::effectLightIntensity(lights[i], seconds));
+        u.colors[i] = glm::vec4(colors[i], 1.f / (radii[i] * radii[i]));
     }
     std::array<uint8_t, uniformStride * sets> ub{};
     for (unsigned s = 0; s < sets; s++) {

@@ -2,7 +2,8 @@
 
 Android C++ forest/ruins comparison using The Forge's Vulkan renderer.
 Reference: [edward9s/filament-test](https://github.com/edward9s/filament-test),
-commit `e6b135ca7a919d90e8f6eb68bb267725e93da43e`.
+latest development branch `fix/effect-lights-illuminate-ruins`,
+commit `4d8be26679331bef10f942e08a75d9cafdc03a5d` (recorded in `assets/reference.json`).
 
 ## Install
 
@@ -26,7 +27,8 @@ The deterministic source geometry and particle trajectories are preserved:
 80 × 80 m terrain, two arches, walls, paving, rubble, trees, ferns, grass, ivy,
 fallen wood and spring; **232 batches, 385,622 triangles**.
 Separate displays contain fire, periodic explosions, water/spray, lightning and smoke.
-Fire, explosions and lightning illuminate nearby surfaces with point lights.
+Fire, explosions and lightning use the latest reference’s daylight-strength point lights,
+matching colors, heights, radii and intensity timing. Point-light shadow maps remain disabled.
 
 Textures, canopy crop and HDR environment use the reference's hash-pinned CC0
 sources. Tree and ruin geometry is generated in `src/Geometry.cpp`; particle and

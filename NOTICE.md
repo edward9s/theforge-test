@@ -2,7 +2,7 @@
 
 Scene geometry, particle equations and texture manifest are ported for the same
 repository owner from edward9s/filament-test commit
-e6b135ca7a919d90e8f6eb68bb267725e93da43e.
+4d8be26679331bef10f942e08a75d9cafdc03a5d.
 
 The Forge: Copyright (c) 2017–2025 The Forge Interactive Inc., Apache License 2.0.
 https://github.com/ConfettiFX/The-Forge

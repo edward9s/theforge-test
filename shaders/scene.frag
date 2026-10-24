@@ -16,5 +16,5 @@ else if(kind==10){float a=texcoord.y*30.0-u.eyeTime.w*4.2+sin(texcoord.x*15.0+u.
 vec3 V=normalize(u.eyeTime.xyz-world),L=normalize(vec3(.32,.82,.47));float shadow=visibility(N,L);vec3 light=brdf(base,rough,metal,N,V,L)*vec3(1,.88,.70)*110000.0*shadow;light+=base*(1.0-metal)*irradiance(N)*9000.0/PI*ao;
 vec3 F0=mix(vec3(.04),base,metal);vec3 env=textureLod(sampler2D(environmentTex,linearSampler),envUv(reflect(-V,N)),rough*8.0).rgb;light+=env*9000.0*(F0+(1.0-F0)*pow(1.0-max(dot(N,V),0.0),5.0))*ao;
 if(kind==3||kind==4)light+=base*vec3(1,.88,.7)*110000.0*.12*pow(max(dot(-N,L),0.0),2.0)*shadow;
-for(int i=0;i<3;i++){vec3 d=u.points[i].xyz-world;float r2=max(dot(d,d),.04);float fall=pow(clamp(1.0-r2/36.0,0.0,1.0),2.0);light+=brdf(base,rough,metal,N,V,normalize(d))*u.colors[i].rgb*u.points[i].w/(4.0*PI*r2)*fall;}
+for(int i=0;i<3;i++){vec3 d=u.points[i].xyz-world;float r2=max(dot(d,d),.04);float rangeFactor=r2*u.colors[i].w;float fall=pow(clamp(1.0-rangeFactor*rangeFactor,0.0,1.0),2.0);light+=brdf(base,rough,metal,N,V,normalize(d))*u.colors[i].rgb*u.points[i].w/(4.0*PI*r2)*fall;}
 float fog=1.0-exp(-max(length(world-u.eyeTime.xyz)-18.0,0.0)*.004*exp(-max(world.y-1.0,0.0)*.2));outputColor=vec4(mix(light/38400.0,vec3(.36,.43,.44)*.3,fog),alpha);}

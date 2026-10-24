@@ -44,6 +44,10 @@ jobs:
           set -euo pipefail
           sdkmanager="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -1)"
           "$sdkmanager" "platforms;android-35" "build-tools;35.0.0" "cmake;3.22.1" "ndk;27.3.13750724"
+      - name: Print source and reference revisions
+        run: |
+          git rev-parse HEAD
+          cat assets/reference.json
       - name: Fetch pinned The Forge and GLM
         run: bash scripts/deps.sh
       - name: Validate geometry and effects
@@ -84,8 +88,10 @@ jobs:
           tag=test-build
           apk=TheForge-test-arm64.apk
           digest="$(sha256sum "$apk" | cut -d ' ' -f1)"
+          reference="$(python3 -c 'import json; r=json.load(open("assets/reference.json")); print(r["branch"] + " @ " + r["commit"])')"
           notes="Latest successful build #${GITHUB_RUN_NUMBER}, commit ${GITHUB_SHA}.
           The Forge cd504689 / Vulkan 1.1, arm64 release signed with the repository key.
+          Filament reference: ${reference}
           Workflow: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           SHA-256: ${digest}"
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then

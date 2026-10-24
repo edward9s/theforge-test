@@ -1,6 +1,7 @@
 #include "EffectsGeometry.h"
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include <stdexcept>
 int main() {
     const forest::float3 eye{3.07f, 3.16f, 9.54f};
@@ -29,5 +30,35 @@ int main() {
     }
     if (!rejected)
         throw std::runtime_error("Negative time accepted");
-    std::cout << "Five effect sites and timed visibility validated\n";
+    using forest::Effect;
+    using forest::effectLightIntensity;
+    auto check = [](bool ok) {
+        if (!ok)
+            throw std::runtime_error("Effect light timing or output mismatch");
+    };
+    check(effectLightIntensity(Effect::Fire, 0) > 1000000.f);
+    check(effectLightIntensity(Effect::Fire, .2f) != effectLightIntensity(Effect::Fire, 0));
+    check(effectLightIntensity(Effect::Blast, 0) > effectLightIntensity(Effect::Blast, .4f));
+    check(effectLightIntensity(Effect::Blast, 2.5f) == 0.f);
+    check(effectLightIntensity(Effect::Blast, 5.41f) > effectLightIntensity(Effect::Blast, 2.f));
+    check(effectLightIntensity(Effect::Lightning, .12f) > effectLightIntensity(Effect::Lightning, 2.f));
+    check(effectLightIntensity(Effect::Lightning, .3f) > effectLightIntensity(Effect::Lightning, 2.f));
+    for (float time :
+         {-1.f, std::numeric_limits<float>::quiet_NaN(), std::numeric_limits<float>::infinity()}) {
+        bool invalid = false;
+        try {
+            effectLightIntensity(Effect::Fire, time);
+        } catch (const std::invalid_argument &) {
+            invalid = true;
+        }
+        check(invalid);
+    }
+    bool invalid = false;
+    try {
+        effectLightIntensity(Effect::Smoke, 0);
+    } catch (const std::invalid_argument &) {
+        invalid = true;
+    }
+    check(invalid);
+    std::cout << "Five effect sites, timed visibility and daylight illumination validated\n";
 }
