@@ -1,0 +1,10 @@
+.deps/
+.generated/
+.build/
+android/.gradle/
+android/app/.cxx/
+android/app/build/
+android/local.properties
+__pycache__/
+*.apk
+*.jks
