@@ -345,11 +345,14 @@ struct ForestRenderer::Impl {
         require(pipelines[index], "Pipeline creation failed");
     }
     void open(ANativeWindow *window) {
+        require(window && activity, "Android window and activity are required");
         close();
         width = ANativeWindow_getWidth(window);
         height = ANativeWindow_getHeight(window);
         require(width && height, "Invalid window dimensions");
         SwapChainDesc d{};
+        // UNKNOWN (zero) skips vkCreateAndroidSurfaceKHR in The Forge's dispatch.
+        d.mWindowHandle.type = WINDOW_HANDLE_TYPE_ANDROID;
         d.mWindowHandle.window = window;
         d.mWindowHandle.activity = activity;
         d.ppPresentQueues = &queue;
