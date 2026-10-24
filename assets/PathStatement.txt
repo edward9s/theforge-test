@@ -1,0 +1,5 @@
+bundled RD_SHADER_BINARIES = shaders
+bundled RD_TEXTURES = forest
+bundled RD_GPU_CONFIG = GPUCfg
+RD_PIPELINE_CACHE = cache
+RD_LOG = logs
