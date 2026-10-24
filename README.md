@@ -97,3 +97,7 @@ Android startup validates both GPU configuration mounts before initializing Vulk
 All PathStatement directories end with `/`, as the Android filesystem concatenates
 paths literally. Asset and APK checks validate these runtime paths. On failure,
 the native loop drains lifecycle events until Android requests destruction.
+
+Presentation synchronization is allocated from the actual swapchain image count
+returned by the driver, including Android surfaces requiring four or more images.
+These semaphores are recreated with the swapchain; CPU frame slots remain independent.

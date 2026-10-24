@@ -61,7 +61,9 @@ struct ForestRenderer::Impl {
     ::Renderer *renderer{};
     Queue *queue{};
     SwapChain *swap{};
-    Semaphore *acquired[frames]{}, *finished[3]{};
+    Semaphore *acquired[frames]{};
+    // Presentation semaphores belong to swapchain images, not CPU frame slots.
+    std::vector<Semaphore *> finished;
     Fence *fence[frames]{};
     CmdPool *pool[frames]{};
     Cmd *cmd[frames]{};
@@ -221,8 +223,6 @@ struct ForestRenderer::Impl {
                 buffer(4096 * sizeof(forest::Vertex), DESCRIPTOR_TYPE_VERTEX_BUFFER, nullptr, true);
             dynamicIndices[i] = buffer(8192 * sizeof(uint16_t), DESCRIPTOR_TYPE_INDEX_BUFFER, nullptr, true);
         }
-        for (auto &s : finished)
-            initSemaphore(renderer, &s);
         std::vector<forest::Vertex> vs;
         std::vector<uint16_t> is;
         auto meshes = forest::generate();
@@ -365,7 +365,11 @@ struct ForestRenderer::Impl {
         d.mEnableVsync = true;
         addSwapChain(renderer, &d, &swap);
         require(swap, "Swapchain creation failed");
-        require(swap->mImageCount <= 3, "Unexpected swapchain image count");
+        require(swap->mImageCount > 0, "Swapchain has no images");
+        finished.resize(swap->mImageCount, nullptr);
+        for (auto &semaphore : finished)
+            initSemaphore(renderer, &semaphore);
+        LOGF(eINFO, "Swapchain ready: %u images, %ux%u pixels", swap->mImageCount, width, height);
         hdr = target(width, height, TinyImageFormat_R16G16B16A16_SFLOAT, false);
         depth = target(width, height, TinyImageFormat_D32_SFLOAT, true);
         for (auto &s : shadows)
@@ -424,6 +428,13 @@ struct ForestRenderer::Impl {
         if (!queue)
             return;
         waitQueueIdle(queue);
+        // Queue idle covers every frame submitted against the old swapchain.
+        for (auto semaphore : finished)
+            if (semaphore)
+                exitSemaphore(renderer, semaphore);
+        finished.clear();
+        std::fill(std::begin(submitted), std::end(submitted), false);
+        frameIndex = 0;
         if (bindings) {
             removeDescriptorSet(renderer, bindings);
             bindings = nullptr;
@@ -484,9 +495,6 @@ struct ForestRenderer::Impl {
                 if (acquired[i])
                     exitSemaphore(renderer, acquired[i]);
             }
-            for (auto s : finished)
-                if (s)
-                    exitSemaphore(renderer, s);
             if (loaderReady)
                 exitResourceLoaderInterface(renderer);
             if (queue)
