@@ -19,5 +19,4 @@ float blastAge(float seconds);
 float lightningPulse(float seconds);
 // Invisible explosion/strike batches are empty; active batches keep fixed topology.
 EffectMeshes effectMeshes(float seconds, float3 eye);
-}
-
+} // namespace forest

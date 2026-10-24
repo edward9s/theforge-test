@@ -19,8 +19,7 @@ struct Mesh {
     std::vector<uint32_t> indices;
 };
 // Merge only bit-identical vertex records; preserve every triangle and attribute seam.
-void compact(Mesh& mesh);
+void compact(Mesh &mesh);
 float elevation(float x, float z);
 std::vector<Mesh> generate();
-}
-
+} // namespace forest

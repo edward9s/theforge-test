@@ -5,5 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
 namespace forest {
-using float2=glm::vec2;using float3=glm::vec3;using float4=glm::vec4;
-}
+using float2 = glm::vec2;
+using float3 = glm::vec3;
+using float4 = glm::vec4;
+} // namespace forest
