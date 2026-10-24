@@ -91,3 +91,9 @@ entry-point export, ELF/ZIP alignment and signature. There is no automated
 Android GPU render test.
 
 See [asset credits](assets/CREDITS.md) and [third-party notices](NOTICE.md).
+
+Android startup validates both GPU configuration mounts before initializing Vulkan.
+`gpu.data` is mounted through `RD_OTHER_FILES`, and `gpu.cfg` through `RD_GPU_CONFIG`.
+All PathStatement directories end with `/`, as the Android filesystem concatenates
+paths literally. Asset and APK checks validate these runtime paths. On failure,
+the native loop drains lifecycle events until Android requests destruction.

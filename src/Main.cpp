@@ -31,6 +31,8 @@ void fail(App &a, const char *message) {
 }
 void command(android_app *android, int32_t cmd) {
     auto &a = *static_cast<App *>(android->userData);
+    if (a.failed)
+        return;
     try {
         if (cmd == APP_CMD_INIT_WINDOW && android->window) {
             if (!a.renderer)
@@ -95,16 +97,16 @@ extern "C" void android_main(android_app *android) {
     android->onInputEvent = input;
     ANativeActivity_setWindowFlags(android->activity, AWINDOW_FLAG_KEEP_SCREEN_ON | AWINDOW_FLAG_FULLSCREEN,
                                    0);
-    while (!android->destroyRequested && !app.failed) {
+    while (!android->destroyRequested) {
         int events;
         android_poll_source *source;
-        bool render = app.active && app.renderer && app.renderer->ready();
+        bool render = !app.failed && app.active && app.renderer && app.renderer->ready();
         int id = ALooper_pollOnce(render ? 0 : -1, nullptr, &events, reinterpret_cast<void **>(&source));
         if (id >= 0 && source)
             source->process(android, source);
-        if (android->destroyRequested || app.failed)
+        if (android->destroyRequested)
             break;
-        if (app.active && app.renderer && app.renderer->ready())
+        if (!app.failed && app.active && app.renderer && app.renderer->ready())
             try {
                 auto now = Clock::now();
                 app.seconds += std::chrono::duration<float>(now - app.previous).count();

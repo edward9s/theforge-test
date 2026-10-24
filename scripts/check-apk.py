@@ -1,5 +1,7 @@
 import struct,sys,zipfile
+from paths import check_paths
 with zipfile.ZipFile(sys.argv[1]) as apk:
+ check_paths(lambda name: apk.read('assets/' + name))
  names=set(apk.namelist());required={'AndroidManifest.xml','lib/arm64-v8a/libmain.so','assets/PathStatement.txt','assets/forest/environment.tex','assets/forest/irradiance.bin','assets/GPUCfg/gpu.data','assets/GPUCfg/gpu.cfg'}
  required|={f'assets/shaders/{s}.spv' for s in ['scene.vert','scene.frag','shadow.vert','shadow.frag','effects.frag','fullscreen.vert','post.frag']}
  if required-names:raise RuntimeError(f'Missing APK entries: {required-names}')

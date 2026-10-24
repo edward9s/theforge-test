@@ -188,6 +188,14 @@ struct ForestRenderer::Impl {
         filesReady = true;
         initLog("ForestForge", LogLevel(eINFO | eWARNING | eERROR));
         logReady = true;
+        // The Forge concatenates directory and filename without adding a slash.
+        // Verify the actual mounted paths before GPU detection can classify a device.
+        for (auto file : {std::pair{RD_OTHER_FILES, "gpu.data"}, std::pair{RD_GPU_CONFIG, "gpu.cfg"}}) {
+            FileStream stream{};
+            if (!fsOpenStreamFromPath(file.first, file.second, FM_READ, &stream))
+                throw std::runtime_error(std::string("Missing bundled GPU configuration: ") + file.second);
+            fsCloseStream(&stream);
+        }
         initGPUConfiguration(nullptr);
         gpuReady = true;
         RendererDesc desc{};

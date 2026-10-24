@@ -19,3 +19,9 @@ assert sh.size==36 and np.isfinite(sh).all() and np.max(sh)>0
 assert len(list((root/'shaders').glob('*.spv')))==7
 for path in (root/'shaders').glob('*.spv'):assert path.read_bytes()[:4]==b'\x03\x02\x23\x07',path
 print('11 complete texture mip chains, irradiance SH and 7 SPIR-V shaders validated')
+
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+from paths import check_paths
+check_paths(lambda name: (root / name).read_bytes())
+print('Android GPU configuration mounts resolve to packaged files')
