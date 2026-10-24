@@ -1,18 +1,21 @@
+// clang-format off
+// Standard headers precede The Forge's allocator macros.
 #include "Renderer.h"
-#include "Common_3/Graphics/Interfaces/IGraphics.h"
-#include "Common_3/Resources/ResourceLoader/Interfaces/IResourceLoader.h"
-#include "Common_3/Utilities/Interfaces/IFileSystem.h"
-#include "Common_3/Utilities/Interfaces/IMemory.h"
-#include "Common_3/Utilities/Log/Log.h"
-#include "EffectsGeometry.h"
 #include "Geometry.h"
+#include "EffectsGeometry.h"
 #include <algorithm>
-#include <android/asset_manager.h>
 #include <array>
 #include <cstring>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <android/asset_manager.h>
+#include "Common_3/Graphics/Interfaces/IGraphics.h"
+#include "Common_3/Resources/ResourceLoader/Interfaces/IResourceLoader.h"
+#include "Common_3/Utilities/Interfaces/IFileSystem.h"
+#include "Common_3/Utilities/Interfaces/IMemory.h"
+#include "Common_3/Utilities/Log/Log.h"
+// clang-format on
 namespace {
 constexpr unsigned frames = 2, sets = 27, uniformStride = 768, shadowSize = 2048;
 struct Uniform {

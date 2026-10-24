@@ -22,5 +22,5 @@ target_compile_options(main PRIVATE -ffunction-sections -fdata-sections -fvisibi
 target_link_options(main PRIVATE -Wl,--gc-sections -Wl,-z,max-page-size=16384 -Wl,--no-undefined -u ANativeActivity_onCreate)
 target_link_libraries(main PRIVATE android log dl)
 # Android Clang/LLD support ThinLTO directly; avoid CMake 3.22's host-Gold probe.
-target_compile_options(main PRIVATE "$<$<CONFIG:Release>:-flto=thin>")
-target_link_options(main PRIVATE "$<$<CONFIG:Release>:-flto=thin>")
+target_compile_options(main PRIVATE "$<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-flto=thin>")
+target_link_options(main PRIVATE "$<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-flto=thin>")
