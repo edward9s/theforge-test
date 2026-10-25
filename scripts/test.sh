@@ -7,3 +7,5 @@ for test in geometry effects; do
  g++ -std=c++20 -O2 -Wall -Wextra -Werror -I.deps/glm -Isrc "tests/$test.cpp" src/Geometry.cpp src/EffectsGeometry.cpp -o "$output/$test"
  "$output/$test"
 done
+g++ -std=c++20 -O2 -Wall -Wextra -Werror -I.deps/glm tests/rocks.cpp -o "$output/rocks"
+"$output/rocks"
